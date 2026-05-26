@@ -72,7 +72,6 @@ function App() {
 
       let parsedInfo = await response.json()
 
-      console.log(parsedInfo)
 
       setResults(parsedInfo.data)
 
@@ -107,7 +106,6 @@ function App() {
     {
       let parsedInfo = await response.json()
 
-      console.log(parsedInfo)
 
       setResults(parsedInfo.data)
 
