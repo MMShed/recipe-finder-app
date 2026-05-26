@@ -38,7 +38,7 @@ body {
 
 .resultsGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 20px;
 }
 
@@ -119,3 +119,37 @@ body {
   margin-bottom: 5px;
 }
 
+
+.filtersPanel {
+  background: white;
+  padding: 15px;
+  border-radius: 10px;
+  margin-top: 15px;
+
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+
+  transition: 0.2s ease;
+}
+
+.filtersPanel h3 {
+  margin-bottom: 5px;
+}
+
+.filtersPanel label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+}
+
+.filter-btn {
+  border-radius: 25px;
+  font-size: 2em;
+  background-color: blue;
+  color: white;
+}
