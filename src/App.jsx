@@ -3,10 +3,10 @@ import './styles.css'
 
 function App() {
 
-
-  const dietary_restrictions = ['vegetarian', 'vegan', 'gluten_free', 'dairy_free', 'nut_free', 'halal', 'kosher']
-  const cuisines = ['american', 'french', 'greek', 'italian', 'japanese', 'mexican', 'portuguese', 'spanish', 'thai', 'turkish']
-  const meal_types = ['starter', 'main', 'dessert', 'appetizer', 'breakfast', 'brunch', 'snack', 'side_dish', 'soup', 'drink', 'sauce']
+  // ADD halal and kosher once the API get's fixed
+  const dietary_restrictions = ['none', 'vegetarian', 'vegan', 'gluten_free', 'dairy_free', 'nut_free']
+  const cuisines = ['none', 'american', 'french', 'greek', 'italian', 'japanese', 'mexican', 'portuguese', 'spanish', 'thai', 'turkish']
+  const meal_types = ['none', 'starter', 'main', 'dessert', 'appetizer', 'breakfast', 'brunch', 'snack', 'side_dish', 'soup', 'drink', 'sauce']
 
   const API_KEY = import.meta.env.VITE_API_KEY
 
@@ -45,7 +45,6 @@ function App() {
 
   async function searchRecipe (query)
   {
-    //TODO: Handle query
     let requestURL = `https://recipeapi.io/api/v1/recipes?`
     
 
@@ -61,6 +60,8 @@ function App() {
 
     if (requestURL[requestURL.length - 1] == '&') {requestURL.slice(0, -1)}
 
+    console.log(filters)
+
     const response = await fetch(
     requestURL,
     {headers: {"Authorization": `Bearer ${API_KEY}`}}
@@ -72,6 +73,7 @@ function App() {
 
       let parsedInfo = await response.json()
 
+      console.log(parsedInfo.data)
 
       setResults(parsedInfo.data)
 
@@ -152,12 +154,26 @@ function App() {
                 dietary_restrictions.map (restriction => {
                   return (
                     <div className='option'>
-                      <input type='radio' id={restriction} onChange={(e) => {
+                      <input type='radio' id={restriction} name='dietary' onChange={(e) => {
 
-                          setFilters({...filters, dietary_tags: [e.target.id]})
+                          if (e.target.checked)
+                          {
+                            if (e.target.id === 'none') {setFilters({...filters, dietary_tags: []})}
+                            else {setFilters({...filters, dietary_tags: [e.target.id]})}
+                            
+                          }
+                          else
+                          {
+                            setFilters({...filters, dietary_tags: []})
+                          }
+
 
                       }}></input>
+
+
                       <label htmlFor={restriction}>{restriction.replaceAll("_", "-")}</label>
+
+
                     </div>
                   );
                 })
@@ -172,9 +188,18 @@ function App() {
                 cuisines.map (cuisine => {
                   return (
                     <div className='option'>
-                      <input type='radio' id={cuisine} onChange={(e) => {
+                      <input type='radio' id={cuisine} name='cuisine' onChange={(e) => {
 
-                        setFilters({...filters, cuisine: [e.target.id]})
+                        if (e.target.checked)
+                          {
+                            if (e.target.id === 'none') {setFilters({...filters, cuisine: []})}
+                            else {setFilters({...filters, cuisine: [e.target.id]})}
+                            
+                          }
+                          else
+                          {
+                            setFilters({...filters, cuisine: []})
+                          }
                       
                       }}></input>
                       <label htmlFor={cuisine}>{cuisine}</label>
@@ -194,7 +219,7 @@ function App() {
                 meal_types.map (meal => {
                   return (
                     <div className='option'>
-                      <input type='radio' id={meal} onChange={(e) => {
+                      <input type='radio' id={meal} name='meal type' onChange={(e) => {
                         setFilters({...filters, meal: [e.target.id]})
                       }}></input>
                       <label htmlFor={meal}>{meal}</label>
@@ -276,30 +301,34 @@ function App() {
   {
     return (
       <>
-        <h2>Recipe for {currRecipe.name}</h2>
 
-        <ul>
-          Ingredients:
+        <div className='recipe-page'>
+          <h2>Recipe for {currRecipe.name}</h2>
 
-          {
-            currRecipe.ingredients.map ((ingredient) =>
-               {return <li>{ingredient.quantity} {ingredient.unit} {ingredient.name} {ingredient.optional && <em>"(Optional)"</em>}</li>})
-          }
+          <ul>
+            Ingredients:
 
-        </ul>
-
-
-        <ol>
-          Recipe:
-
-          {
-            currRecipe.instructions.map ((step) =>
             {
-              return <li>{step}</li>
-            })
-          }
+              currRecipe.ingredients.map ((ingredient) =>
+                {return <li>{ingredient.quantity} {ingredient.unit} {ingredient.name} {ingredient.optional && <em>"(Optional)"</em>}</li>})
+            }
 
-        </ol>
+          </ul>
+
+
+          <ol>
+            Recipe:
+
+            {
+              currRecipe.instructions.map ((step) =>
+              {
+                return <li>{step}</li>
+              })
+            }
+
+          </ol>
+
+        </div>
 
         <button onClick={(e) => setPage("lookup")}>Go Back</button>
 
